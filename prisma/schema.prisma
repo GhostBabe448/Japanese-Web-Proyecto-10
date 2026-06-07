@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+
+  cars  Car[]
+  bids  Bid[]
+}
+
+model Car {
+  id          String   @id @default(cuid())
+  title       String
+  brand       String
+  model       String
+  year        Int
+  price       Float
+  mileage     Int
+  description String
+  imageUrl    String
+  origin      String   // "japanese" | "classic"
+  listingType String   // "sale" | "auction"
+  status      String   @default("active") // active | sold | ended
+  sellerId    String
+  seller      User     @relation(fields: [sellerId], references: [id])
+  createdAt   DateTime @default(now())
+  auctionEnd  DateTime?
+
+  bids Bid[]
+}
+
+model Bid {
+  id        String   @id @default(cuid())
+  amount    Float
+  carId     String
+  car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  bidderId  String
+  bidder    User     @relation(fields: [bidderId], references: [id])
+  createdAt DateTime @default(now())
+}
