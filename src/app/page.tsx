@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { CarCard } from "@/components/CarCard";
 
+export const dynamic = "force-dynamic";
+
 async function getFeaturedCars() {
   return prisma.car.findMany({
     where: { status: "active" },
